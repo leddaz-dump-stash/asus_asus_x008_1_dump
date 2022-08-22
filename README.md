@@ -1,0 +1,14 @@
+# full_D281L-user 6.0 MRA58K 1492754100 release-keys
+- manufacturer: asus
+- platform: mt6737m
+- codename: ASUS_X008_1
+- flavor: full_D281L-user
+- release: 6.0
+- id: MRA58K
+- incremental: ID_Phone-13.1.1.70-20170421
+- tags: release-keys
+- fingerprint: asus/ID_Phone/ASUS_X008_1:6.0/MRA58K/ID_Phone-13.1.1.70-20170421:user/release-keys
+- is_ab: false
+- brand: asus
+- branch: full_D281L-user-6.0-MRA58K-1492754100-release-keys
+- repo: asus_asus_x008_1_dump
