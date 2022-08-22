@@ -1,0 +1,43 @@
+# zhaozhensen@wind-mobi.com 20160725 begin
+on boot
+	write /proc/bootprof "start tkcore-teed (on boot)"
+	chmod 0666 /dev/tkcoredrv
+	chmod 0666 /dev/graphics/fb0
+
+	mkdir /system/lib/t6
+	chown 0755 /system/lib/t6
+	chown system system /system/lib/t6
+
+	start teed
+	write /proc/bootprof "end tkcore-teed (on boot)"
+
+on post-fs-data
+	write /proc/bootprof "start tkcore-cfg (on post-fs-data)"
+
+	mkdir /data/tee
+	mkdir /data/tee/t6
+	chmod 0755 /data/tee
+	chmod 0766 /data/tee/t6
+	chown system system /data/tee
+	chown system system /data/tee/t6
+	restorecon /data/tee
+	restorecon /data/tee/t6
+
+	write /data/teec.log 0
+	chmod 0666 /data/teec.log
+	chown system system /data/teec.log
+	restorecon /data/teec.log
+
+	write /data/ifaa-test.log 0
+	chmod 0666 /data/ifaa-test.log
+	chown system system /data/ifaa-test.log
+	restorecon /data/ifaa-test.log
+
+	write /proc/bootprof "end tkcore-cfg (on post-fs-data)"
+
+service teed /system/bin/teed
+	user system
+	group system
+	class core
+	seclabel u:r:tkcore:s0
+# zhaozhensen@wind-mobi.com 20160725 end
