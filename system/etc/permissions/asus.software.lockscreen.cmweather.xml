@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- xuyi@wind-mobi.com 20160518 add for CM_weather begin -->
+<permissions>
+    <feature name="asus.software.lockscreen.cmweather" />
+</permissions>
+<!-- xuyi@wind-mobi.com 20160518 add for CM_weather end -->
