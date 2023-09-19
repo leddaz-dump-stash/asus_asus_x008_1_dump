@@ -1,0 +1,200 @@
+# MTK project .rc configure
+
+import init.mt6735.usb.rc
+
+on init
+    mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
+    mkdir /storage/usbotg 0700 root root
+
+##add by sunxiaolong@wind-mobi.com for otg reverse charging begin
+chmod 0666 /sys/class/usbsw/usbsw/usbsw_val
+chown system system /sys/class/usbsw/usbsw/usbsw_val
+chmod 0666 /sys/class/otg_chg/otg_chg/otg_chg_val
+chown system system /sys/class/otg_chg/otg_chg/otg_chg_val
+chmod 0666 /sys/class/switch/otg_state/state
+chown system system /sys/class/switch/otg_state/state
+##add by sunxiaolong@wind-mobi.com for otg reverse charging end
+#sunxiaolong@wind-mobi.com 20161117 add begin	
+    mkdir /factory 0700 root root
+    mkdir /ADF 0775 system system
+    mkdir /APD 0775 system system
+#sunxiaolong@wind-mobi.com 20161117 add end
+on post-fs-data
+
+
+#dingyisheng@wind-mobi.com 20170504 start
+    symlink /system/bin/PhoneInfoTest /data/data/PhoneInfoTest
+    chmod 0775 /data/data/PhoneInfoTest
+#dingyisheng@wind-mobi.com 20170504 end
+
+
+#   insmod /vendor/lib/modules/mtk_hif_sdio.ko
+#   insmod /vendor/lib/modules/mtk_stp_wmt.ko
+#   insmod /vendor/lib/modules/mtk_stp_uart.ko
+#   insmod /vendor/lib/modules/mtk_stp_gps.ko
+#   insmod /vendor/lib/modules/mtk_stp_bt.ko
+#   insmod /vendor/lib/modules/mtk_fm_drv.ko
+#   insmod /vendor/lib/modules/mtk_wmt_wifi.ko
+
+
+
+
+
+
+#Camera
+    chmod 0660 /dev/MAINAF
+    chown system camera /dev/MAINAF
+
+    chmod 0660 /dev/MAINAF2
+    chown system camera /dev/MAINAF2
+
+    chmod 0660 /dev/SUBAF
+    chown system camera /dev/SUBAF
+
+    chmod 0660 /dev/GAF001AF
+    chown system camera /dev/GAF001AF
+
+    chmod 0660 /dev/DW9714AF
+    chown system camera /dev/DW9714AF
+
+    chmod 0660 /dev/AD5820AF
+    chown system camera /dev/AD5820AF
+
+	chmod 0660 /dev/BU64745GWZAF
+    chown system camera /dev/BU64745GWZAF
+
+#SMB
+    chown system system /proc/smb/ScreenComm
+    chmod 0660 /proc/smb/ScreenComm
+
+
+#add by qiangang@wind-mobi.com	20161215 begin
+chmod 0666  /proc/aging_power_test/Charging_ChargeState
+chmod 0666 /proc/aging_power_test/Charging_DemoApp_ChargeState
+#add by qiangang@wind-mobi.com	20161215 end
+##liqiang@wind-mobi.com 20170325 begin 
+    chmod 0666 /sys/devices/platform/battery/Charging_batterylife
+##liqiang@wind-mobi.com 20170325 end 
+
+
+#Define device for ATCID
+    chmod 660 /dev/ttyGS0
+    chown system /dev/ttyGS0
+    chmod 660 /dev/ttyGS1
+    chown system /dev/ttyGS1
+
+#   insmod /vendor/lib/modules/wlan_mt.ko
+
+
+#sunxiaolong@wind-mobi.com 20161117 add begin
+    chmod 0666 /factory/Voucher_enc.bin
+    #add by liuyang@wind-mobi.com 20180509 begin
+    mkdir /factory/persist 0700 root root
+    chown system system /factory/persist
+    chmod 0775 /factory/persist
+    #add by liuyang@wind-mobi.com 20180509 end
+    chown system system /APD
+    chmod 0775 /APD
+    chown system system /ADF
+    chmod 0775 /ADF
+
+    restorecon_recursive /factory
+    restorecon_recursive /APD
+    restorecon_recursive /ADF
+#sunxiaolong@wind-mobi.com 20161117 add end
+
+
+on init
+    # Refer to http://source.android.com/devices/tech/storage/index.html
+    # It said, "Starting in Android 4.4, multiple external storage devices are surfaced to developers through
+    #           Context.getExternalFilesDirs(), Context.getExternalCacheDirs(), and Context.getObbDirs().
+    #           External storage devices surfaced through these APIs must be a semi-permanent part of the device (such as an SD card slot in a battery compartment).
+    #           Developers expect data stored in these locations to be available over long periods of time."
+    # Therefore, if the target doesn't support sd hot-plugging (Ex: the SD card slot in a battery compartment), we need to export SECONDARY_STORAGE in 'boot' section
+    #
+    # export SECONDARY_STORAGE /storage/sdcard1
+
+service fuse_usbotg /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usbotg /storage/usbotg
+    class late_start
+    disabled
+
+
+service atci_service /vendor/bin/atci_service
+	socket atci-service stream 660 radio system
+	socket atci-serv-fw stream 660 radio system
+	user root
+        disabled
+	group radio system
+service atcid-daemon-u /vendor/bin/atcid
+	user system
+	group radio system media
+	disabled
+	oneshot
+
+service atcid-daemon-e /vendor/bin/atcid
+	user root
+	group radio system
+	disabled
+	oneshot
+
+on early_property:ro.build.type=eng
+start atci_service
+start atcid-daemon-e
+service audio-daemon /vendor/bin/audiocmdservice_atci
+    class main
+    socket atci-audio stream 660 media system
+    user media
+    group nvram media system sdcard_rw
+    disabled
+    oneshot
+
+
+
+
+
+
+
+#sunxiaolong@wind-mobi.com 20161117 add begin
+service VerifyVouchers /system/bin/VerifyVouchers
+    class core
+    user root
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start VerifyVouchers
+#yutao@wind-mobi.com add begin
+service unlockcheck /system/bin/unlockcheck  
+	class core  
+	user root  
+	group system 
+	oneshot  
+	disabled  
+
+on property:sys.unlocked=1  
+	start unlockcheck
+#yutao@wind-mobi.com add end		
+service mount_apd /system/bin/mount_apd.sh
+    class late_start
+    user root
+    group sdcard_rw
+    disabled
+seclabel u:r:mount_apd:s0
+
+on property:persist.sys.enableAPD=1
+  start mount_apd
+##qiangang@wind-mobi.com 20161215 begin
+    write /proc/aging_power_test/Charging_DemoApp_ChargeState 1
+
+on property:persist.sys.enableAPD=0
+    write /proc/aging_power_test/Charging_DemoApp_ChargeState 0
+##qiangang@wind-mobi.com 20161215 end
+
+##liqiang@wind-mobi.com 20170325 begin 	
+on property:persist.sys.extbatterylife=1
+    write /sys/devices/platform/battery/Charging_batterylife 2
+    
+on property:persist.sys.extbatterylife=0
+    write /sys/devices/platform/battery/Charging_batterylife 1 
+##liqiang@wind-mobi.com 20170325 end 
+#sunxiaolong@wind-mobi.com 20161117 add end

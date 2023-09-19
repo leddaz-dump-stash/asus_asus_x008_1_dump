@@ -1,0 +1,14 @@
+# full_D281L-user 7.0 NRD90M 1533302391 release-keys
+- manufacturer: asus
+- platform: mt6737m
+- codename: ASUS_X008_1
+- flavor: full_D281L-user
+- release: 7.0
+- id: NRD90M
+- incremental: WW_Phone-14.10.1808.119-20180803
+- tags: release-keys
+- fingerprint: asus/WW_Phone/ASUS_X008_1:7.0/NRD90M/WW_Phone-14.10.1808.119-20180803:user/release-keys
+- is_ab: false
+- brand: asus
+- branch: full_D281L-user-7.0-NRD90M-1533302391-release-keys
+- repo: asus_asus_x008_1_dump

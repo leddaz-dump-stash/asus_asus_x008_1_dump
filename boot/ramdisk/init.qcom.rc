@@ -1,0 +1,10 @@
+service hostapd_cmd /system/bin/hostapd_cmd
+    class main
+    group system wifi
+    user root
+    oneshot
+    disabled
+
+on property:persist.sys.wifi.hostapd.cmd=*
+    chmod 644 /data/misc/wifi/hostapd.accept
+    start hostapd_cmd
