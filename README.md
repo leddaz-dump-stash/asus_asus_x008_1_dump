@@ -1,0 +1,14 @@
+# full_D281L-user 8.1.0 O11019 1541405538 release-keys
+- manufacturer: asus
+- platform: mt6737m
+- codename: ASUS_X008_1
+- flavor: full_D281L-user
+- release: 8.1.0
+- id: O11019
+- incremental: -15.10.1810.275-20181105
+- tags: release-keys
+- fingerprint: asus/WW_Phone/ASUS_X008_1:8.1.0/O11019/-15.10.1810.275-20181105:user/release-keys
+- is_ab: false
+- brand: asus
+- branch: full_D281L-user-8.1.0-O11019-1541405538-release-keys
+- repo: asus_asus_x008_1_dump
